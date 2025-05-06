@@ -1,0 +1,177 @@
+  <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Analisador de Exames com Dicas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f7fc;
+      padding: 30px;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      font-size: 18px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .normal {
+      color: green;
+      font-weight: bold;
+    }
+
+    .alterado {
+      color: red;
+      font-weight: bold;
+    }
+
+    #resultado {
+      margin-top: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .dica {
+      background-color: #fef9e7;
+      padding: 10px;
+      margin-top: 10px;
+      border-left: 5px solid #f1c40f;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🩺 Analisador de Exames com Orientações</h1>
+
+  <form id="formulario">
+    <label>Glicose (mg/dL): <input type="number" step="0.1" name="Glicose" /></label>
+    <label>Colesterol Total (mg/dL): <input type="number" step="0.1" name="Colesterol Total" /></label>
+    <label>HDL (mg/dL): <input type="number" step="0.1" name="HDL" /></label>
+    <label>LDL (mg/dL): <input type="number" step="0.1" name="LDL" /></label>
+    <label>Triglicerídeos (mg/dL): <input type="number" step="0.1" name="Triglicerídeos" /></label>
+    <label>Creatinina (mg/dL): <input type="number" step="0.1" name="Creatinina" /></label>
+    <label>Ureia (mg/dL): <input type="number" step="0.1" name="Ureia" /></label>
+    <label>TGO (U/L): <input type="number" step="0.1" name="TGO" /></label>
+    <label>TGP (U/L): <input type="number" step="0.1" name="TGP" /></label>
+    <label>TSH (µUI/mL): <input type="number" step="0.1" name="TSH" /></label>
+    <label>T4 Livre (ng/dL): <input type="number" step="0.1" name="T4 Livre" /></label>
+
+    <button type="button" onclick="analisar()">Analisar Resultados</button>
+  </form>
+
+  <div id="resultado"></div>
+
+  <script>
+    function analisar() {
+      const exames = [
+        {
+          nome: "Glicose", unidade: "mg/dL", min: 70, max: 99,
+          dicaAlta: "Pode indicar pré-diabetes ou diabetes. Evite açúcares simples, pratique exercícios e consulte um endocrinologista.",
+          dicaBaixa: "Pode estar relacionado a jejum prolongado, hipoglicemia ou medicação. Fique atento a tonturas ou fraqueza."
+        },
+        {
+          nome: "Colesterol Total", unidade: "mg/dL", max: 200,
+          dicaAlta: "Risco cardiovascular elevado. Evite frituras, reduza gorduras saturadas e aumente o consumo de fibras."
+        },
+        {
+          nome: "HDL", unidade: "mg/dL", min: 40,
+          dicaBaixa: "HDL baixo aumenta risco cardiovascular. Pratique exercícios, consuma peixes e oleaginosas."
+        },
+        {
+          nome: "LDL", unidade: "mg/dL", max: 130,
+          dicaAlta: "LDL elevado é fator de risco para infarto e AVC. Reduza alimentos gordurosos e aumente fibras."
+        },
+        {
+          nome: "Triglicerídeos", unidade: "mg/dL", max: 150,
+          dicaAlta: "Pode indicar risco cardiovascular e resistência à insulina. Reduza carboidratos simples e evite álcool."
+        },
+        {
+          nome: "Creatinina", unidade: "mg/dL", min: 0.6, max: 1.3,
+          dicaAlta: "Pode indicar problema renal. Beba bastante água e evite excesso de proteína."
+        },
+        {
+          nome: "Ureia", unidade: "mg/dL", min: 10, max: 50,
+          dicaAlta: "Pode sugerir sobrecarga renal ou desidratação. Aumente ingestão de líquidos."
+        },
+        {
+          nome: "TGO", unidade: "U/L", max: 40,
+          dicaAlta: "TGO elevado pode indicar lesão hepática. Reduza álcool e alimentos gordurosos."
+        },
+        {
+          nome: "TGP", unidade: "U/L", max: 41,
+          dicaAlta: "TGP elevado pode sinalizar alterações no fígado. Evite bebidas alcoólicas."
+        },
+        {
+          nome: "TSH", unidade: "µUI/mL", min: 0.4, max: 4.0,
+          dicaAlta: "Pode indicar hipotireoidismo. Agende avaliação com endocrinologista.",
+          dicaBaixa: "Pode indicar hipertireoidismo. Avaliação médica é importante."
+        },
+        {
+          nome: "T4 Livre", unidade: "ng/dL", min: 0.8, max: 1.8,
+          dicaAlta: "T4 alto pode indicar hipertireoidismo. Fique atento a palpitações e perda de peso.",
+          dicaBaixa: "T4 baixo pode indicar hipotireoidismo. Sintomas incluem cansaço, ganho de peso, frio."
+        },
+      ];
+
+      const form = document.getElementById("formulario");
+      let resultadoHTML = "<h3>🧾 Resultados e Dicas:</h3>";
+
+      exames.forEach(e => {
+        const valor = parseFloat(form[e.nome].value);
+        if (isNaN(valor)) {
+          resultadoHTML += `<p><strong>${e.nome}:</strong> <span style="color: gray">Não informado</span></p>`;
+          return;
+        }
+
+        let status = "normal";
+        let dicas = "";
+        if (e.min && valor < e.min) {
+          status = "alterado";
+          dicas = e.dicaBaixa || "";
+        } else if (e.max && valor > e.max) {
+          status = "alterado";
+          dicas = e.dicaAlta || "";
+        }
+
+        resultadoHTML += `
+          <p><strong>${e.nome}:</strong> ${valor} ${e.unidade} - 
+          <span class="${status}">${status === "normal" ? "Normal" : "Fora do ideal"}</span></p>
+        `;
+        if (dicas && status === "alterado") {
+          resultadoHTML += `<div class="dica">💡 <strong>Orientação:</strong> ${dicas}</div>`;
+        }
+      });
+
+      document.getElementById("resultado").innerHTML = resultadoHTML;
+    }
+  </script>
+
+</body>
+</html>
