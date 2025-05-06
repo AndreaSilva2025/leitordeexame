@@ -15,4 +15,4 @@ Design responsivo e amigável
 
 📊 Um exemplo simples de como dados bem apresentados e interpretados podem gerar mais consciência e até incentivar cuidados com a saúde.
 
-🔗 [Coloque aqui o link do GitHub ou GitHub Pages]
+🔗 (https://andreasilva2025.github.io/leitordeexame/)
